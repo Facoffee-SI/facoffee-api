@@ -21,7 +21,6 @@ export class CreateUserDto {
     minUppercase: 1,
     minNumbers: 1,
     minSymbols: 1,
-    minLength: 4,
   })
   password: string;
 }

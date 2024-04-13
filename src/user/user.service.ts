@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -14,6 +19,11 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const user = await this.findByEmail(createUserDto.email);
+    if (user) {
+      throw new BadRequestException('Email já cadastrado.');
+    }
+
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
 
     return await this.userRepository.save(
@@ -33,11 +43,18 @@ export class UserService {
     }
   }
 
+  async findByEmail(email: string): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findOneOrFail(id);
+    const userByEmail = await this.findByEmail(updateUserDto.email);
+    if (userByEmail) {
+      throw new BadRequestException('Email já cadastrado.');
+    }
 
     updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-
     this.userRepository.merge(user, updateUserDto);
     return await this.userRepository.save(user);
   }
@@ -45,5 +62,19 @@ export class UserService {
   async remove(id: string) {
     await this.findOneOrFail(id);
     await this.userRepository.softDelete(id);
+  }
+
+  async validateUser(email: string, password: string): Promise<UserEntity> {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Senha incorreta');
+    }
+
+    return user;
   }
 }
