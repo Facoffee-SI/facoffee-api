@@ -102,6 +102,7 @@ export class UserService {
 
   async remove(id: string) {
     await this.findOneOrFail(id);
+    await this.userRoleService.removeByUserId(id);
     await this.userRepository.softDelete(id);
   }
 

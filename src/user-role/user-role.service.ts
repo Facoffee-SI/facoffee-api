@@ -45,15 +45,15 @@ export class UserRoleService {
     return rolesByUser;
   }
 
-  async recreate(userId: string, roleIds: [string]) {
+  async removeByUserId(userId: string) {
     const userRoles = await this.findByUser(userId);
     const userRolesIds = userRoles.map((userRoleId) => userRoleId.id);
 
     await this.userRoleRepository.delete(userRolesIds);
-    await this.create(userId, roleIds);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userRole`;
+  async recreate(userId: string, roleIds: [string]) {
+    await this.removeByUserId(userId);
+    await this.create(userId, roleIds);
   }
 }
