@@ -7,25 +7,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user' })
-export class UserEntity {
+@Entity({ name: 'role' })
+export class RoleEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   name: string;
-
-  @Column()
-  email: string;
-
-  @Column({ select: false })
-  password: string;
-
-  @Column({ name: 'profile_picture' })
-  profilePicture: string;
-
-  @Column({ name: 'is_admin', default: false })
-  isAdmin: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

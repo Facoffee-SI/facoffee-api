@@ -1,4 +1,6 @@
 import {
+  ArrayMinSize,
+  IsArray,
   IsEmail,
   IsEmpty,
   IsNotEmpty,
@@ -32,4 +34,9 @@ export class CreateUserDto {
     minSymbols: 1,
   })
   password: string;
+
+  @IsNotEmpty()
+  @IsArray()
+  @ArrayMinSize(1)
+  roleIds: [string];
 }

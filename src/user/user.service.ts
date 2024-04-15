@@ -10,12 +10,14 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
+import { UserRoleService } from 'src/user-role/user-role.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly userRoleService: UserRoleService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -26,18 +28,48 @@ export class UserService {
 
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
 
-    return await this.userRepository.save(
+    const userCreated = await this.userRepository.save(
       this.userRepository.create(createUserDto),
     );
+    await this.userRoleService.create(userCreated.id, createUserDto.roleIds);
+
+    return userCreated;
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+  async findAll() {
+    const users = await this.userRepository.find();
+
+    const usersWithRoles = await Promise.all(
+      users.map(async (user) => {
+        const userRoles = await this.userRoleService.roleIdsByUser(user.id);
+
+        return {
+          user,
+          userRoles,
+        };
+      }),
+    );
+
+    return usersWithRoles;
   }
 
   async findOneOrFail(id: string) {
     try {
       return await this.userRepository.findOneOrFail({ where: { id } });
+    } catch (error) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+  }
+
+  async userAndRoles(id: string) {
+    try {
+      const user = await this.userRepository.findOneOrFail({ where: { id } });
+      const userRoles = await this.userRoleService.roleIdsByUser(id);
+
+      return {
+        user,
+        userRoles,
+      };
     } catch (error) {
       throw new NotFoundException('Usuário não encontrado.');
     }
@@ -50,11 +82,14 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findOneOrFail(id);
     const userByEmail = await this.findByEmail(updateUserDto.email);
-    if (userByEmail) {
+    if (userByEmail && user.id !== userByEmail.id) {
       throw new BadRequestException('Email já cadastrado.');
     }
 
     updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+
+    await this.userRoleService.recreate(user.id, updateUserDto.roleIds);
+
     this.userRepository.merge(user, updateUserDto);
     return await this.userRepository.save(user);
   }

@@ -27,7 +27,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOneOrFail(id);
+    return this.userService.userAndRoles(id);
   }
 
   @Patch(':id')
