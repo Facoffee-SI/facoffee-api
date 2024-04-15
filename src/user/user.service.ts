@@ -59,6 +59,12 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async makeAdmin(id: string) {
+    const user = await this.findOneOrFail(id);
+    user.isAdmin = true;
+    return await this.userRepository.save(user);
+  }
+
   async remove(id: string) {
     await this.findOneOrFail(id);
     await this.userRepository.softDelete(id);

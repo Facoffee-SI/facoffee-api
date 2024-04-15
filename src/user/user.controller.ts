@@ -35,6 +35,11 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
+  @Patch(':id/admin')
+  makeAdmin(@Param('id') id: string) {
+    return this.userService.makeAdmin(id);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);

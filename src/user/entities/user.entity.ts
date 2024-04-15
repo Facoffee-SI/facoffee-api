@@ -21,6 +21,12 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @Column({ name: 'profile_picture' })
+  profilePicture: string;
+
+  @Column({ name: 'is_admin', default: false })
+  isAdmin: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
