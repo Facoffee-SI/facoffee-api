@@ -28,12 +28,11 @@ export class UserService {
 
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
 
+    await this.userRoleService.verifyRoles(createUserDto.roleIds);
     const userCreated = await this.userRepository.save(
       this.userRepository.create(createUserDto),
     );
     await this.userRoleService.create(userCreated.id, createUserDto.roleIds);
-
-    return userCreated;
   }
 
   async findAll() {
@@ -41,7 +40,7 @@ export class UserService {
 
     const usersWithRoles = await Promise.all(
       users.map(async (user) => {
-        const userRoles = await this.userRoleService.roleIdsByUser(user.id);
+        const userRoles = await this.userRoleService.rolesByUser(user.id);
 
         return {
           user,
@@ -64,7 +63,7 @@ export class UserService {
   async userAndRoles(id: string) {
     try {
       const user = await this.userRepository.findOneOrFail({ where: { id } });
-      const userRoles = await this.userRoleService.roleIdsByUser(id);
+      const userRoles = await this.userRoleService.rolesByUser(id);
 
       return {
         user,
@@ -87,11 +86,11 @@ export class UserService {
     }
 
     updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-
+    await this.userRoleService.verifyRoles(updateUserDto.roleIds);
     await this.userRoleService.recreate(user.id, updateUserDto.roleIds);
 
     this.userRepository.merge(user, updateUserDto);
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   async makeAdmin(id: string) {

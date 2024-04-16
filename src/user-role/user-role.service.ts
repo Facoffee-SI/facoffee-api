@@ -20,8 +20,10 @@ export class UserRoleService {
     await this.userRoleRepository.save(userRoleEntities);
   }
 
-  findAll() {
-    return `This action returns all userRole`;
+  async verifyRoles(roleIds: [string]) {
+    for (const roleId of roleIds) {
+      await this.roleService.findOneOrFail(roleId);
+    }
   }
 
   async findByUser(userId: string) {
@@ -30,7 +32,7 @@ export class UserRoleService {
     });
   }
 
-  async roleIdsByUser(userId: string) {
+  async rolesByUser(userId: string) {
     const userRoles = await this.userRoleRepository.find({
       where: { userId: userId },
     });

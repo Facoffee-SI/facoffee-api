@@ -32,7 +32,7 @@ export class PermissionService {
     return await this.permissionRepository.find();
   }
 
-  async findOneOrFail(id: string) {
+  async findOneOrFail(id: number) {
     try {
       return await this.permissionRepository.findOneOrFail({ where: { id } });
     } catch (error) {
@@ -40,14 +40,18 @@ export class PermissionService {
     }
   }
 
-  async update(id: string, updatePermissionDto: UpdatePermissionDto) {
+  async findOne(id: number) {
+    return await this.permissionRepository.findOne({ where: { id } });
+  }
+
+  async update(id: number, updatePermissionDto: UpdatePermissionDto) {
     const permission = await this.findOneOrFail(id);
 
     this.permissionRepository.merge(permission, updatePermissionDto);
     return await this.permissionRepository.save(permission);
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     await this.findOneOrFail(id);
     await this.permissionRepository.delete(id);
   }

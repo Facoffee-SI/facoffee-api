@@ -27,7 +27,7 @@ export class RoleController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.roleService.findOneOrFail(id);
+    return this.roleService.rolesAndPermissions(id);
   }
 
   @Patch(':id')

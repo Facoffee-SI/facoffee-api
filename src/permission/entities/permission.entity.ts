@@ -15,8 +15,8 @@ export enum ActionEnum {
 
 @Entity({ name: 'permission' })
 export class PermissionEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({
     type: 'enum',

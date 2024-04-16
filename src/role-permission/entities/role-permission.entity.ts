@@ -15,7 +15,7 @@ export class RolePermissionEntity {
   roleId: string;
 
   @Column({ name: 'permission_id' })
-  permissionId: string;
+  permissionId: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
