@@ -8,12 +8,15 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ActionEnum, PermissionEntity } from './entities/permission.entity';
 import { Repository } from 'typeorm';
+import { RolePermissionEntity } from 'src/role-permission/entities/role-permission.entity';
 
 @Injectable()
 export class PermissionService {
   constructor(
     @InjectRepository(PermissionEntity)
     private readonly permissionRepository: Repository<PermissionEntity>,
+    @InjectRepository(RolePermissionEntity)
+    private readonly rolePermissionRepository: Repository<RolePermissionEntity>,
   ) {}
 
   async create(createPermissionDto: CreatePermissionDto) {
@@ -53,6 +56,16 @@ export class PermissionService {
 
   async remove(id: number) {
     await this.findOneOrFail(id);
+
+    const rolesInPermissionCount = await this.rolePermissionRepository.count({
+      where: { permissionId: id },
+    });
+    if (rolesInPermissionCount > 0) {
+      throw new BadRequestException(
+        'Permissão possui cargos associados. Não é possível deletar.',
+      );
+    }
+
     await this.permissionRepository.delete(id);
   }
 }

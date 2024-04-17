@@ -9,12 +9,15 @@ import { RoleEntity } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RolePermissionService } from 'src/role-permission/role-permission.service';
+import { UserRoleEntity } from 'src/user-role/entities/user-role.entity';
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(RoleEntity)
     private readonly roleRepository: Repository<RoleEntity>,
+    @InjectRepository(UserRoleEntity)
+    private readonly userRoleRepository: Repository<UserRoleEntity>,
     private readonly rolePermissionService: RolePermissionService,
   ) {}
 
@@ -115,7 +118,17 @@ export class RoleService {
 
   async remove(id: string) {
     await this.findOneOrFail(id);
+
+    const usersInRoleCount = await this.userRoleRepository.count({
+      where: { roleId: id },
+    });
+    if (usersInRoleCount > 0) {
+      throw new BadRequestException(
+        'Cargo possui usuários associados. Não é possível deletar.',
+      );
+    }
+
     await this.rolePermissionService.removeByRoleId(id);
-    await this.roleRepository.softDelete(id);
+    await this.roleRepository.delete(id);
   }
 }
