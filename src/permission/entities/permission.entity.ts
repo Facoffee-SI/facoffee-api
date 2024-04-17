@@ -7,9 +7,9 @@ import {
 } from 'typeorm';
 
 export enum ActionEnum {
-  CREATE = 'CREATE',
-  READ = 'READ',
-  UPDATE = 'UPDATE',
+  POST = 'POST',
+  GET = 'GET',
+  PATCH = 'PATCH',
   DELETE = 'DELETE',
 }
 

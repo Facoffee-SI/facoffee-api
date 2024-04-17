@@ -61,19 +61,21 @@ export class RoleService {
     return rolesWithPermissions;
   }
 
-  async findOneOrFail(id: string) {
+  async findOneOrFail(roleId: string) {
     try {
-      return await this.roleRepository.findOneOrFail({ where: { id } });
+      return await this.roleRepository.findOneOrFail({ where: { id: roleId } });
     } catch (error) {
       throw new NotFoundException('Cargo não encontrado.');
     }
   }
 
-  async rolesAndPermissions(id: string) {
+  async rolesAndPermissions(roleId: string) {
     try {
-      const role = await this.roleRepository.findOneOrFail({ where: { id } });
+      const role = await this.roleRepository.findOneOrFail({
+        where: { id: roleId },
+      });
       const rolePermissions =
-        await this.rolePermissionService.permissionsByRole(id);
+        await this.rolePermissionService.permissionsByRole(roleId);
 
       return {
         role,

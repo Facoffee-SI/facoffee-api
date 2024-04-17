@@ -2,7 +2,6 @@ import {
   ArrayMinSize,
   IsArray,
   IsEmail,
-  IsEmpty,
   IsNotEmpty,
   IsStrongPassword,
   IsUrl,
@@ -22,9 +21,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsUrl()
   profilePicture: string;
-
-  @IsEmpty()
-  isAdmin: boolean;
 
   @IsNotEmpty()
   @IsStrongPassword({

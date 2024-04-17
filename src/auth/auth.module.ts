@@ -4,6 +4,10 @@ import { AuthController } from './auth.controller';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserRoleModule } from 'src/user-role/user-role.module';
+import { AuthMiddleware } from './auth.middleware';
+import { MiddlewareBuilder } from '@nestjs/core';
+import { RolePermissionModule } from 'src/role-permission/role-permission.module';
 
 @Module({
   imports: [
@@ -18,8 +22,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         secret: configService.get<string>('JWT_SECRET'),
       }),
     }),
+    UserRoleModule,
+    RolePermissionModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AuthMiddleware],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareBuilder) {
+    consumer.apply(AuthMiddleware).exclude('/auth/user').forRoutes('*');
+  }
+}
