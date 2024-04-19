@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from './category/category.module';
@@ -36,16 +36,8 @@ import * as cors from 'cors';
     RolePermissionModule,
   ],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareBuilder) {
-    consumer
-      .apply(
-        cors({
-          origin: 'http://localhost:3000',
-          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-          credentials: true,
-        }),
-      )
-      .forRoutes('*');
+    consumer.apply(cors()).forRoutes('*');
   }
 }
