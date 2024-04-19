@@ -8,6 +8,8 @@ import { RoleModule } from './role/role.module';
 import { PermissionModule } from './permission/permission.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { RolePermissionModule } from './role-permission/role-permission.module';
+import { MiddlewareBuilder } from '@nestjs/core';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -34,4 +36,16 @@ import { RolePermissionModule } from './role-permission/role-permission.module';
     RolePermissionModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareBuilder) {
+    consumer
+      .apply(
+        cors({
+          origin: 'http://localhost:3000',
+          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          credentials: true,
+        }),
+      )
+      .forRoutes('*');
+  }
+}
