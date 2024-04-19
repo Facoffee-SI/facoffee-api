@@ -41,6 +41,7 @@ export class UserService {
     const usersWithRoles = await Promise.all(
       users.map(async (user) => {
         const userRoles = await this.userRoleService.rolesByUser(user.id);
+        delete user.password;
 
         return {
           user,
@@ -64,6 +65,7 @@ export class UserService {
     try {
       const user = await this.userRepository.findOneOrFail({ where: { id } });
       const userRoles = await this.userRoleService.rolesByUser(id);
+      delete user.password;
 
       return {
         user,
