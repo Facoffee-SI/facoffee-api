@@ -10,29 +10,32 @@ import {
 import { IsMultiWord } from './multi-word-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Nome completo é obrigatório.' })
   @Validate(IsMultiWord)
   name: string;
 
-  @IsNotEmpty()
-  @IsEmail()
+  @IsNotEmpty({ message: 'Email é obrigatório.' })
+  @IsEmail({}, { message: 'Email é inválido.' })
   email: string;
 
-  @IsNotEmpty()
-  @IsUrl()
+  @IsNotEmpty({ message: 'A foto de perfil é obrigatória.' })
+  @IsUrl({}, { message: 'Deve ser enviado uma URL válida na foto de perfil.' })
   profilePicture: string;
 
-  @IsNotEmpty()
-  @IsStrongPassword({
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
+  @IsNotEmpty({ message: 'Senha é obrigatória.' })
+  @IsStrongPassword(
+    {
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    { message: 'Senha não é forte o suficiente.' },
+  )
   password: string;
 
-  @IsNotEmpty()
-  @IsArray()
-  @ArrayMinSize(1)
+  @IsNotEmpty({ message: 'IDs dos Cargos é obrigatório.' })
+  @IsArray({ message: 'IDs dos Cargos deve ser um Array.' })
+  @ArrayMinSize(1, { message: 'Deve ser enviado pelo menos um Cargo.' })
   roleIds: [string];
 }

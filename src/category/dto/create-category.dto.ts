@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
 export class CreateCategoryDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Nome da categoria é obrigatório.' })
   name: string;
 }
