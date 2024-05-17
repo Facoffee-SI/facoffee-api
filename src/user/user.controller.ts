@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -43,5 +46,19 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
+  }
+
+  @Post('image/:userId')
+  @UseInterceptors(FileInterceptor('profilePicture'))
+  uploadFile(
+    @UploadedFile() profilePicture: Express.Multer.File,
+    @Param('userId') userId: string,
+  ) {
+    return this.userService.sendProfilePicture(profilePicture, userId);
+  }
+
+  @Get('image/:userId')
+  getProfilePicture(@Param('userId') userId: string) {
+    return this.userService.getProfilePicture(userId);
   }
 }

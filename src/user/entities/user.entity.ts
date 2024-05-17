@@ -21,8 +21,8 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column({ name: 'profile_picture' })
-  profilePicture: string;
+  @Column({ name: 'profile_picture', type: 'longblob', nullable: true })
+  profilePicture: Buffer;
 
   @Column({ name: 'is_admin', default: false })
   isAdmin: boolean;

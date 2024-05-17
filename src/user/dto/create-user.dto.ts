@@ -4,7 +4,6 @@ import {
   IsEmail,
   IsNotEmpty,
   IsStrongPassword,
-  IsUrl,
   Validate,
 } from 'class-validator';
 import { IsMultiWord } from './multi-word-validator';
@@ -17,10 +16,6 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Email é obrigatório.' })
   @IsEmail({}, { message: 'Email é inválido.' })
   email: string;
-
-  @IsNotEmpty({ message: 'A foto de perfil é obrigatória.' })
-  @IsUrl({}, { message: 'Deve ser enviado uma URL válida na foto de perfil.' })
-  profilePicture: string;
 
   @IsNotEmpty({ message: 'Senha é obrigatória.' })
   @IsStrongPassword(

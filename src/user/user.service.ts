@@ -42,6 +42,7 @@ export class UserService {
       users.map(async (user) => {
         const userRoles = await this.userRoleService.rolesByUser(user.id);
         delete user.password;
+        delete user.profilePicture;
 
         return {
           user,
@@ -66,6 +67,7 @@ export class UserService {
       const user = await this.userRepository.findOneOrFail({ where: { id } });
       const userRoles = await this.userRoleService.rolesByUser(id);
       delete user.password;
+      delete user.profilePicture;
 
       return {
         user,
@@ -119,5 +121,20 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async sendProfilePicture(
+    profilePicture: Express.Multer.File,
+    userId: string,
+  ): Promise<void> {
+    const user = await this.findOneOrFail(userId);
+    user.profilePicture = profilePicture.buffer;
+
+    await this.userRepository.save(user);
+  }
+
+  async getProfilePicture(userId: string): Promise<ArrayBufferLike> {
+    const user = await this.findOneOrFail(userId);
+    return user.profilePicture;
   }
 }
