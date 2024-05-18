@@ -1,7 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from './category/category.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
+import { UserRoleModule } from './user-role/user-role.module';
+import { RolePermissionModule } from './role-permission/role-permission.module';
+import { MiddlewareBuilder } from '@nestjs/core';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -20,6 +28,16 @@ import { CategoryModule } from './category/category.module';
       }),
     }),
     CategoryModule,
+    UserModule,
+    AuthModule,
+    RoleModule,
+    PermissionModule,
+    UserRoleModule,
+    RolePermissionModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareBuilder) {
+    consumer.apply(cors()).forRoutes('*');
+  }
+}
