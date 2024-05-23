@@ -9,6 +9,7 @@ import { PermissionModule } from './permission/permission.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { RolePermissionModule } from './role-permission/role-permission.module';
 import { MiddlewareBuilder } from '@nestjs/core';
+import { ProductModule } from './product/product.module';
 import * as cors from 'cors';
 
 @Module({
@@ -34,6 +35,7 @@ import * as cors from 'cors';
     PermissionModule,
     UserRoleModule,
     RolePermissionModule,
+    ProductModule,
   ],
 })
 export class AppModule implements NestModule {
