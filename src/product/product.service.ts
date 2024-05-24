@@ -5,12 +5,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
 import { CategoryService } from 'src/category/category.service';
+import { ProductImageEntity } from './entities/product-image.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(ProductImageEntity)
+    private readonly productImageRepository: Repository<ProductImageEntity>,
     private readonly categoryService: CategoryService,
   ) {}
 
@@ -33,7 +36,7 @@ export class ProductService {
   async findOne(id: string) {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['category'],
+      relations: ['category', 'images'],
     });
     return product;
   }
@@ -51,7 +54,32 @@ export class ProductService {
     return await this.productRepository.save(product);
   }
 
+  async sendProductImage(
+    image: Express.Multer.File,
+    productId: string,
+  ): Promise<void> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+
+    const images = await this.productImageRepository.find({
+      where: { product: product },
+    });
+
+    if (images) {
+      await this.productImageRepository.delete({ product });
+    }
+
+    const imageProduct = this.productImageRepository.create({
+      image: image.buffer,
+      product: product,
+    });
+
+    await this.productImageRepository.save(imageProduct);
+  }
+
   async remove(id: string) {
+    await this.productImageRepository.delete({ product: { id } });
     return await this.productRepository.delete(id);
   }
 }

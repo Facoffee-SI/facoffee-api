@@ -4,11 +4,14 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CategoryEntity } from 'src/category/entities/category.entity';
+import { ProductImageEntity } from './product-image.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity {
@@ -42,6 +45,12 @@ export class ProductEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
+
+  @OneToMany(() => ProductImageEntity, (image) => image.product, {
+    cascade: true,
+  })
+  @JoinTable({ name: 'product_images' })
+  images: ProductImageEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
