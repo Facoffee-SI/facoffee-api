@@ -6,13 +6,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export enum ActionEnum {
-  POST = 'POST',
-  GET = 'GET',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-}
-
 @Entity({ name: 'contact' })
 export class ContactEntity {
   @PrimaryGeneratedColumn('uuid')

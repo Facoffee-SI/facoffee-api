@@ -26,7 +26,7 @@ export class ContactService {
     try {
       return await this.contactRepository.findOneOrFail({ where: { id } });
     } catch (error) {
-      throw new NotFoundException('Categoria não encontrada.');
+      throw new NotFoundException('Contato não encontrado.');
     }
   }
 
