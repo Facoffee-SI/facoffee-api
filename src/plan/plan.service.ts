@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { PlanEntity } from './entities/plan.entity';
 import { PlanImageEntity } from './entities/plan-image.entity';
+import { PlanProductService } from 'src/plan-product/plan-product.service';
 
 @Injectable()
 export class PlanService {
@@ -13,11 +19,19 @@ export class PlanService {
     private readonly planRepository: Repository<PlanEntity>,
     @InjectRepository(PlanImageEntity)
     private readonly planImageRepository: Repository<PlanImageEntity>,
+    @Inject(forwardRef(() => PlanProductService))
+    private readonly planProductService: PlanProductService,
   ) {}
 
   async create(createPlanDto: CreatePlanDto) {
     const plan = this.planRepository.create(createPlanDto);
-    return await this.planRepository.save(plan);
+    const planCreated = await this.planRepository.save(plan);
+    await this.planProductService.updatePlanProducts(
+      planCreated.id,
+      createPlanDto.productIds,
+    );
+
+    return planCreated;
   }
 
   async findAll() {
@@ -27,14 +41,21 @@ export class PlanService {
   async findOne(id: string) {
     const plan = await this.planRepository.findOne({
       where: { id },
-      relations: ['images'],
+      relations: ['images', 'products'],
     });
+
+    if (!plan) {
+      throw new NotFoundException(`Plano com ID ${id} não encontrado`);
+    }
     return plan;
   }
 
   async update(id: string, updatePlanDto: UpdatePlanDto) {
-    const plan = await this.planRepository.findOne({ where: { id } });
-
+    await this.planProductService.updatePlanProducts(
+      id,
+      updatePlanDto.productIds,
+    );
+    const plan = await this.findOne(id);
     this.planRepository.merge(plan, updatePlanDto);
     return await this.planRepository.save(plan);
   }
@@ -65,6 +86,7 @@ export class PlanService {
 
   async remove(id: string) {
     await this.planImageRepository.delete({ plan: { id } });
+    await this.planProductService.remove(id);
     return await this.planRepository.delete(id);
   }
 }

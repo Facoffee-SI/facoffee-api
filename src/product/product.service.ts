@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
@@ -39,6 +39,12 @@ export class ProductService {
       relations: ['category', 'images'],
     });
     return product;
+  }
+
+  async findByIds(productIds: string[]) {
+    return await this.productRepository.findBy({
+      id: In(productIds),
+    });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {

@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,6 +13,7 @@ import {
 } from 'typeorm';
 import { CategoryEntity } from 'src/category/entities/category.entity';
 import { ProductImageEntity } from './product-image.entity';
+import { PlanEntity } from 'src/plan/entities/plan.entity';
 
 @Entity({ name: 'product' })
 export class ProductEntity {
@@ -51,6 +53,9 @@ export class ProductEntity {
   })
   @JoinTable({ name: 'product_images' })
   images: ProductImageEntity[];
+
+  @ManyToMany(() => PlanEntity, (plan) => plan.products)
+  plans: PlanEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

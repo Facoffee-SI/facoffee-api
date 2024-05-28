@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreatePlanDto {
   @IsNotEmpty({ message: 'Nome do plano é obrigatório.' })
@@ -13,4 +13,11 @@ export class CreatePlanDto {
 
   @IsNotEmpty({ message: 'Descrição do produto é obrigatória.' })
   description: string;
+
+  @IsNotEmpty({ message: 'IDs dos produtos são obrigatórios' })
+  @IsArray()
+  productIds: string[];
+
+  @IsOptional()
+  active: boolean;
 }

@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PlanImageEntity } from './plan-image.entity';
+import { PlanProductEntity } from 'src/plan-product/entities/plan-product.entity';
 
 @Entity({ name: 'plan' })
 export class PlanEntity {
@@ -26,11 +27,20 @@ export class PlanEntity {
   @Column({ type: 'text' })
   description: string;
 
+  @Column({ type: 'boolean', default: true })
+  active: boolean;
+
   @OneToMany(() => PlanImageEntity, (image) => image.plan, {
     cascade: true,
   })
   @JoinTable({ name: 'plan_images' })
   images: PlanImageEntity[];
+
+  @OneToMany(() => PlanProductEntity, (planProduct) => planProduct.plan, {
+    cascade: true,
+    eager: true,
+  })
+  products: PlanProductEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
