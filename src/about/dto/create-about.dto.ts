@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
 export class CreateAboutDto {
-  @IsNotEmpty({ message: ' é obrigatório.' })
+  @IsNotEmpty({ message: 'Descrição é obrigatório.' })
   description: string;
 }
