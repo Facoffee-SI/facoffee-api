@@ -1,31 +1,37 @@
-import { ProductEntity } from 'src/product/entities/product.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'category' })
-export class CategoryEntity {
+@Entity({ name: 'contact' })
+export class ContactEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   name: string;
 
-  @OneToMany(() => ProductEntity, (product) => product.category)
-  products: ProductEntity[];
+  @Column()
+  address: string;
+
+  @Column()
+  phone: string;
+
+  @Column({ type: 'text' })
+  description: string;
+
+  @Column()
+  email: string;
+
+  @Column({ name: 'link_google_maps' })
+  linkGoogleMaps: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
-
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: string;
 }

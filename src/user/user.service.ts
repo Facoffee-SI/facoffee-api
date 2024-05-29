@@ -33,6 +33,8 @@ export class UserService {
       this.userRepository.create(createUserDto),
     );
     await this.userRoleService.create(userCreated.id, createUserDto.roleIds);
+
+    return { id: userCreated.id };
   }
 
   async findAll() {

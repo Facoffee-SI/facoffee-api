@@ -18,17 +18,35 @@ INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GE
 INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
--- role_permission
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'role_permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'role_permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'role_permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'role_permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+-- permission
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'permission', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
--- user_role
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'user_role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'user_role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'user_role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'user_role', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+-- product
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'product', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'product', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'product', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'product', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+
+-- contact
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'contact', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'contact', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'contact', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'contact', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+
+-- plan
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'plan', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'plan', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'plan', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'plan', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+
+-- about-us
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
 -- ROLE-ADMIN
 SET @uuid_role = uuid();
@@ -45,6 +63,7 @@ INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at)
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 7, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 8, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 9, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 10, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 11, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 12, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 13, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
@@ -54,9 +73,19 @@ INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at)
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 17, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 18, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 19, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 19, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 20, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 21, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 22, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 23, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 24, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 25, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 26, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 27, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 28, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 29, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 30, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 31, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 32, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
 -- USER
 -- EMAIL: adminuser@mailinator.com
