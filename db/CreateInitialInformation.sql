@@ -43,10 +43,10 @@ INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PA
 INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'plan', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
 -- about-us
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'about-us', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'about-us', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'about-us', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'about-us', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('POST', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
 -- ROLE-ADMIN
 SET @uuid_role = uuid();
