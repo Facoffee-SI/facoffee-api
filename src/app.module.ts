@@ -13,6 +13,7 @@ import { ProductModule } from './product/product.module';
 import { ContactModule } from './contact/contact.module';
 import { PlanModule } from './plan/plan.module';
 import { PlanProductModule } from './plan-product/plan-product.module';
+import { AboutUsModule } from './about-us/about-us.module';
 import * as cors from 'cors';
 
 @Module({
@@ -42,6 +43,7 @@ import * as cors from 'cors';
     ContactModule,
     PlanModule,
     PlanProductModule,
+    AboutUsModule,
   ],
 })
 export class AppModule implements NestModule {

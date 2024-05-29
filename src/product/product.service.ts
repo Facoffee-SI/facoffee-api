@@ -30,6 +30,7 @@ export class ProductService {
   async findAll() {
     return await this.productRepository.find({
       relations: ['category'],
+      order: { name: 'ASC', createdAt: 'DESC' },
     });
   }
 

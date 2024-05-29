@@ -35,7 +35,9 @@ export class PlanService {
   }
 
   async findAll() {
-    return await this.planRepository.find();
+    return await this.planRepository.find({
+      order: { name: 'ASC', createdAt: 'DESC' },
+    });
   }
 
   async findOne(id: string) {
