@@ -11,7 +11,7 @@ export class CreatePlanDto {
   @IsNotEmpty({ message: 'Preço Anual é obrigatório.' })
   priceYear: number;
 
-  @IsNotEmpty({ message: 'Descrição do produto é obrigatória.' })
+  @IsNotEmpty({ message: 'Descrição do plano é obrigatória.' })
   description: string;
 
   @IsNotEmpty({ message: 'IDs dos produtos são obrigatórios' })

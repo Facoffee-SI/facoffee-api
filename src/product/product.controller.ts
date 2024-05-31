@@ -7,12 +7,12 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -43,12 +43,17 @@ export class ProductController {
     return this.productService.remove(id);
   }
 
-  @Post('image/:productId')
-  @UseInterceptors(FileInterceptor('image'))
+  @Post('images/:productId')
+  @UseInterceptors(FilesInterceptor('images'))
   uploadFile(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles() images: Express.Multer.File[],
     @Param('productId') productId: string,
   ) {
-    return this.productService.sendProductImage(image, productId);
+    return this.productService.uploadProductImages(images, productId);
+  }
+
+  @Delete('images/:productId')
+  removeImages(@Param('productId') productId: string) {
+    return this.productService.removeImages(productId);
   }
 }

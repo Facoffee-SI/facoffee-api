@@ -62,28 +62,32 @@ export class PlanService {
     return await this.planRepository.save(plan);
   }
 
-  async sendPlanImage(
-    image: Express.Multer.File,
+  async uploadPlanImages(
+    images: Express.Multer.File[],
     planId: string,
   ): Promise<void> {
     const plan = await this.planRepository.findOne({
       where: { id: planId },
     });
 
-    const images = await this.planImageRepository.find({
-      where: { plan: plan },
+    await this.planImageRepository.delete({ plan });
+
+    const imageEntities = images.map((image) =>
+      this.planImageRepository.create({
+        image: image.buffer,
+        plan: plan,
+      }),
+    );
+
+    await this.planImageRepository.save(imageEntities);
+  }
+
+  async removeImages(planId: string) {
+    const plan = await this.planRepository.findOne({
+      where: { id: planId },
     });
 
-    if (images) {
-      await this.planImageRepository.delete({ plan });
-    }
-
-    const imagePlan = this.planImageRepository.create({
-      image: image.buffer,
-      plan: plan,
-    });
-
-    await this.planImageRepository.save(imagePlan);
+    await this.planImageRepository.delete({ plan });
   }
 
   async remove(id: string) {

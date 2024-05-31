@@ -61,28 +61,32 @@ export class ProductService {
     return await this.productRepository.save(product);
   }
 
-  async sendProductImage(
-    image: Express.Multer.File,
+  async uploadProductImages(
+    images: Express.Multer.File[],
     productId: string,
   ): Promise<void> {
     const product = await this.productRepository.findOne({
       where: { id: productId },
     });
 
-    const images = await this.productImageRepository.find({
-      where: { product: product },
+    await this.productImageRepository.delete({ product });
+
+    const imageEntities = images.map((image) =>
+      this.productImageRepository.create({
+        image: image.buffer,
+        product: product,
+      }),
+    );
+
+    await this.productImageRepository.save(imageEntities);
+  }
+
+  async removeImages(productId: string) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
     });
 
-    if (images) {
-      await this.productImageRepository.delete({ product });
-    }
-
-    const imageProduct = this.productImageRepository.create({
-      image: image.buffer,
-      product: product,
-    });
-
-    await this.productImageRepository.save(imageProduct);
+    await this.productImageRepository.delete({ product });
   }
 
   async remove(id: string) {
