@@ -55,9 +55,4 @@ export class UserController {
   ) {
     return this.userService.sendProfilePicture(profilePicture, userId);
   }
-
-  @Get('image/:userId')
-  getProfilePicture(@Param('userId') userId: string) {
-    return this.userService.getProfilePicture(userId);
-  }
 }

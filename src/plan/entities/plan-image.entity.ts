@@ -13,8 +13,8 @@ export class PlanImageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'longblob', nullable: false })
-  image: Buffer;
+  @Column({ name: 'image_url', type: 'varchar', nullable: false })
+  imageUrl: string;
 
   @ManyToOne(() => PlanEntity, (plan) => plan.images)
   plan: PlanEntity;

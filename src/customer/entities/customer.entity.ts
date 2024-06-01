@@ -30,8 +30,8 @@ export class CustomerEntity {
   @Column()
   password: string;
 
-  @Column({ name: 'profile_picture', type: 'longblob', nullable: true })
-  profilePicture: Buffer;
+  @Column({ name: 'profile_picture_url', type: 'varchar', nullable: true })
+  profilePicture: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

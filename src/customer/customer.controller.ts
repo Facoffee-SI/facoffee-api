@@ -50,10 +50,4 @@ export class CustomerController {
     const customerId = req['customerId'];
     return this.customerService.sendProfilePicture(profilePicture, customerId);
   }
-
-  @Get('image/')
-  getProfilePicture(@Req() req: Request) {
-    const customerId = req['customerId'];
-    return this.customerService.getProfilePicture(customerId);
-  }
 }

@@ -28,6 +28,11 @@ export class ProductController {
     return this.productService.findAll();
   }
 
+  @Get('/customer')
+  findAllForCustomer() {
+    return this.productService.findAllForCustomer();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.productService.findOne(id);

@@ -10,12 +10,14 @@ import { CustomerEntity } from './entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @InjectRepository(CustomerEntity)
     private readonly customerRepository: Repository<CustomerEntity>,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
@@ -68,7 +70,10 @@ export class CustomerService {
   }
 
   async remove(id: string) {
-    await this.findOneOrFail(id);
+    const customer = await this.findOneOrFail(id);
+    if (customer.profilePicture) {
+      await this.s3Service.deleteImage(customer.profilePicture);
+    }
     await this.customerRepository.softDelete(id);
   }
 
@@ -94,13 +99,12 @@ export class CustomerService {
     customerId: string,
   ): Promise<void> {
     const customer = await this.findOneOrFail(customerId);
-    customer.profilePicture = profilePicture.buffer;
+    if (customer.profilePicture) {
+      await this.s3Service.deleteImage(customer.profilePicture);
+    }
+    const imageUrl = await this.s3Service.uploadImage(profilePicture);
+    customer.profilePicture = imageUrl;
 
     await this.customerRepository.save(customer);
-  }
-
-  async getProfilePicture(customerId: string): Promise<ArrayBufferLike> {
-    const customer = await this.findOneOrFail(customerId);
-    return customer.profilePicture;
   }
 }
