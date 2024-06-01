@@ -8,6 +8,7 @@ import { UserRoleModule } from 'src/user-role/user-role.module';
 import { AuthMiddleware } from './auth.middleware';
 import { MiddlewareBuilder } from '@nestjs/core';
 import { RolePermissionModule } from 'src/role-permission/role-permission.module';
+import { CustomerModule } from 'src/customer/customer.module';
 
 @Module({
   imports: [
@@ -24,12 +25,16 @@ import { RolePermissionModule } from 'src/role-permission/role-permission.module
     }),
     UserRoleModule,
     RolePermissionModule,
+    CustomerModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthMiddleware],
 })
 export class AuthModule {
   configure(consumer: MiddlewareBuilder) {
-    consumer.apply(AuthMiddleware).exclude('/auth/user').forRoutes('*');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/auth/user', '/auth/customer', '/customer/register')
+      .forRoutes('*');
   }
 }
