@@ -21,7 +21,8 @@ export class AuthMiddleware implements NestMiddleware {
       return response.status(401).json({ message: 'Usuário não autorizado.' });
     }
 
-    if (request.baseUrl.startsWith('/customer')) {
+    const baseUrl = request.baseUrl;
+    if (baseUrl.includes('/customer')) {
       request['customerId'] = decodeToken.userId;
       next();
       return;
@@ -29,7 +30,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     const hasPermission = await this.authService.hasPermission(decodeToken, {
       method: request.method,
-      baseUrl: request.baseUrl,
+      baseUrl: baseUrl,
     });
 
     if (!hasPermission) {
