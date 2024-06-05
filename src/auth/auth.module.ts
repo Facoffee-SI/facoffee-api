@@ -34,7 +34,13 @@ export class AuthModule {
   configure(consumer: MiddlewareBuilder) {
     consumer
       .apply(AuthMiddleware)
-      .exclude('/auth/user', '/auth/customer', '/customer/register')
+      .exclude(
+        '/auth/user',
+        '/auth/customer',
+        '/customer/register',
+        '/contact/customer',
+        '/about/customer',
+      )
       .forRoutes('*');
   }
 }

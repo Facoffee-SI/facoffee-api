@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
@@ -19,6 +19,33 @@ export class ProductService {
     private readonly s3Service: S3Service,
   ) {}
 
+  private async findProductOrFail(productId: string): Promise<ProductEntity> {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['category', 'images'],
+    });
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado com o ID informado');
+    }
+    return product;
+  }
+
+  private async handleProductImages(
+    product: ProductEntity,
+    images: Express.Multer.File[],
+  ) {
+    const imageEntities = await Promise.all(
+      images.map(async (image) => {
+        const imageUrl = await this.s3Service.uploadImage(image);
+        return this.productImageRepository.create({
+          imageUrl: imageUrl,
+          product: product,
+        });
+      }),
+    );
+    await this.productImageRepository.save(imageEntities);
+  }
+
   async create(createProductDto: CreateProductDto) {
     const { categoryId } = createProductDto;
     const category = await this.categoryService.findOneOrFail(categoryId);
@@ -36,24 +63,18 @@ export class ProductService {
     });
   }
 
-  async findAllForCustomer() {
-    const products = await this.productRepository.find({
+  async search(search: string) {
+    return await this.productRepository.find({
       relations: ['category', 'images'],
       order: { name: 'ASC', createdAt: 'DESC' },
+      where: {
+        name: Like(`%${search}%`),
+      },
     });
-
-    return products.map((product) => ({
-      ...product,
-      image: product.images[0] ? product.images[0] : null,
-    }));
   }
 
   async findOne(id: string) {
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: ['category', 'images'],
-    });
-    return product;
+    return await this.findProductOrFail(id);
   }
 
   async findByIds(productIds: string[]) {
@@ -64,7 +85,7 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const { categoryId, ...otherUpdates } = updateProductDto;
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.findProductOrFail(id);
 
     if (categoryId) {
       const category = await this.categoryService.findOneOrFail(categoryId);
@@ -79,33 +100,12 @@ export class ProductService {
     images: Express.Multer.File[],
     productId: string,
   ): Promise<void> {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
-
-    if (!product) {
-      throw new NotFoundException('Produto não encontrado com o ID informado');
-    }
-
-    await this.productImageRepository.delete({ product });
-    const imageEntities = await Promise.all(
-      images.map(async (image) => {
-        const imageUrl = await this.s3Service.uploadImage(image);
-        const imageEntity = this.productImageRepository.create({
-          imageUrl: imageUrl,
-          product: product,
-        });
-        return imageEntity;
-      }),
-    );
-
-    await this.productImageRepository.save(imageEntities);
+    const product = await this.findProductOrFail(productId);
+    await this.handleProductImages(product, images);
   }
 
   async removeImages(productId: string) {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
+    const product = await this.findProductOrFail(productId);
 
     const imageEntities = await this.productImageRepository.findBy({ product });
     await Promise.all(
@@ -115,8 +115,10 @@ export class ProductService {
   }
 
   async remove(id: string) {
+    await this.findProductOrFail(id);
+
     const imageEntities = await this.productImageRepository.findBy({
-      product: { id: id },
+      product: { id },
     });
 
     await Promise.all(

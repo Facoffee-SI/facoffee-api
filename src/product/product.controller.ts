@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -29,12 +30,21 @@ export class ProductController {
   }
 
   @Get('/customer')
-  findAllForCustomer() {
-    return this.productService.findAllForCustomer();
+  async findAllOrSearch(@Query('search') search: string) {
+    if (search) {
+      return this.productService.search(search);
+    } else {
+      return this.productService.findAll();
+    }
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
+    return await this.productService.findOne(id);
+  }
+
+  @Get('/customer/:id')
+  async findOneForCustomer(@Param('id') id: string) {
     return await this.productService.findOne(id);
   }
 
