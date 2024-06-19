@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { UserRoleService } from 'src/user-role/user-role.service';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly userRoleService: UserRoleService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -44,7 +46,6 @@ export class UserService {
       users.map(async (user) => {
         const userRoles = await this.userRoleService.rolesByUser(user.id);
         delete user.password;
-        delete user.profilePicture;
 
         return {
           user,
@@ -69,7 +70,6 @@ export class UserService {
       const user = await this.userRepository.findOneOrFail({ where: { id } });
       const userRoles = await this.userRoleService.rolesByUser(id);
       delete user.password;
-      delete user.profilePicture;
 
       return {
         user,
@@ -106,7 +106,10 @@ export class UserService {
   }
 
   async remove(id: string) {
-    await this.findOneOrFail(id);
+    const user = await this.findOneOrFail(id);
+    if (user.profilePicture) {
+      await this.s3Service.deleteImage(user.profilePicture);
+    }
     await this.userRoleService.removeByUserId(id);
     await this.userRepository.softDelete(id);
   }
@@ -130,13 +133,12 @@ export class UserService {
     userId: string,
   ): Promise<void> {
     const user = await this.findOneOrFail(userId);
-    user.profilePicture = profilePicture.buffer;
+    if (user.profilePicture) {
+      await this.s3Service.deleteImage(user.profilePicture);
+    }
+    const imageUrl = await this.s3Service.uploadImage(profilePicture);
+    user.profilePicture = imageUrl;
 
     await this.userRepository.save(user);
-  }
-
-  async getProfilePicture(userId: string): Promise<ArrayBufferLike> {
-    const user = await this.findOneOrFail(userId);
-    return user.profilePicture;
   }
 }

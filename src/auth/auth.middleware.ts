@@ -10,20 +10,27 @@ export class AuthMiddleware implements NestMiddleware {
   async use(request: Request, response: Response, next: NextFunction) {
     if (
       !request.headers.authorization ||
-      !request.headers.authorization.startsWith('Bearer')
+      !request.headers.authorization.startsWith('Bearer ')
     ) {
       return response.status(401).json({ message: 'Token não fornecido.' });
     }
 
     const token = request.headers.authorization.replace('Bearer ', '');
-    const decodeToken = jwt.decode(token);
+    const decodeToken: any = jwt.decode(token);
     if (!decodeToken) {
       return response.status(401).json({ message: 'Usuário não autorizado.' });
     }
 
+    const baseUrl = request.baseUrl;
+    if (baseUrl.includes('/customer')) {
+      request['customerId'] = decodeToken.userId;
+      next();
+      return;
+    }
+
     const hasPermission = await this.authService.hasPermission(decodeToken, {
       method: request.method,
-      baseUrl: request.baseUrl,
+      baseUrl: baseUrl,
     });
 
     if (!hasPermission) {

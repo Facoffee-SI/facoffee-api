@@ -25,6 +25,11 @@ export class ContactController {
     return this.contactService.find();
   }
 
+  @Get('/customer')
+  findAllForCustomer() {
+    return this.contactService.find();
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
     return this.contactService.update(id, updateContactDto);

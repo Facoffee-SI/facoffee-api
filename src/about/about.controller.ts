@@ -25,6 +25,11 @@ export class AboutController {
     return this.aboutService.findAll();
   }
 
+  @Get('/customer')
+  findAllForCustomer() {
+    return this.aboutService.findAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.aboutService.findOne(id);

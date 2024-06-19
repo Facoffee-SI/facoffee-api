@@ -14,12 +14,19 @@ import { ContactModule } from './contact/contact.module';
 import { PlanModule } from './plan/plan.module';
 import { PlanProductModule } from './plan-product/plan-product.module';
 import { AboutModule } from './about/about.module';
+import { CustomerModule } from './customer/customer.module';
+import { S3Service } from './s3/s3.service';
 import * as cors from 'cors';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          envFilePath: '.env',
+        }),
+      ],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
@@ -44,7 +51,9 @@ import * as cors from 'cors';
     PlanModule,
     PlanProductModule,
     AboutModule,
+    CustomerModule,
   ],
+  providers: [S3Service],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareBuilder) {

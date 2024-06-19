@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRoleService } from 'src/user-role/user-role.service';
 import { RolePermissionService } from 'src/role-permission/role-permission.service';
 import { UserService } from 'src/user/user.service';
+import { CustomerEntity } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,13 @@ export class AuthService {
     private readonly userRoleService: UserRoleService,
     private readonly rolePermissionService: RolePermissionService,
   ) {}
+
+  generateTokenCustomer(user: CustomerEntity): string {
+    const payload = {
+      userId: user.id,
+    };
+    return this.jwtService.sign(payload);
+  }
 
   generateTokenUser(user: UserEntity): string {
     const payload = {

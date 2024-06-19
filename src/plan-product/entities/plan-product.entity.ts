@@ -14,11 +14,17 @@ export class PlanProductEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => PlanEntity, (plan) => plan.products)
+  @ManyToOne(() => PlanEntity, (plan) => plan.products, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'plan_id' })
   plan: PlanEntity;
 
-  @ManyToOne(() => ProductEntity, (product) => product.plans)
+  @ManyToOne(() => ProductEntity, (product) => product.plans, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_id' })
   product: ProductEntity;
 

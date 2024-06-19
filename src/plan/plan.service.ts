@@ -11,6 +11,7 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { PlanEntity } from './entities/plan.entity';
 import { PlanImageEntity } from './entities/plan-image.entity';
 import { PlanProductService } from 'src/plan-product/plan-product.service';
+import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class PlanService {
@@ -21,6 +22,7 @@ export class PlanService {
     private readonly planImageRepository: Repository<PlanImageEntity>,
     @Inject(forwardRef(() => PlanProductService))
     private readonly planProductService: PlanProductService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async create(createPlanDto: CreatePlanDto) {
@@ -62,33 +64,55 @@ export class PlanService {
     return await this.planRepository.save(plan);
   }
 
-  async sendPlanImage(
-    image: Express.Multer.File,
+  async uploadPlanImages(
+    images: Express.Multer.File[],
     planId: string,
   ): Promise<void> {
     const plan = await this.planRepository.findOne({
       where: { id: planId },
     });
 
-    const images = await this.planImageRepository.find({
-      where: { plan: plan },
-    });
-
-    if (images) {
-      await this.planImageRepository.delete({ plan });
+    if (!plan) {
+      throw new NotFoundException('Plano não encontrado com o ID informado');
     }
 
-    const imagePlan = this.planImageRepository.create({
-      image: image.buffer,
-      plan: plan,
+    await this.planImageRepository.delete({ plan });
+    const imageEntities = await Promise.all(
+      images.map(async (image) => {
+        const imageUrl = await this.s3Service.uploadImage(image);
+        const imageEntity = this.planImageRepository.create({
+          imageUrl: imageUrl,
+          plan: plan,
+        });
+        return imageEntity;
+      }),
+    );
+
+    await this.planImageRepository.save(imageEntities);
+  }
+
+  async removeImages(planId: string) {
+    const plan = await this.planRepository.findOne({
+      where: { id: planId },
     });
 
-    await this.planImageRepository.save(imagePlan);
+    const imageEntities = await this.planImageRepository.findBy({ plan });
+    await Promise.all(
+      imageEntities.map((image) => this.s3Service.deleteImage(image.imageUrl)),
+    );
+    await this.planImageRepository.delete({ plan });
   }
 
   async remove(id: string) {
+    const imageEntities = await this.planImageRepository.findBy({
+      plan: { id: id },
+    });
+
+    await Promise.all(
+      imageEntities.map((image) => this.s3Service.deleteImage(image.imageUrl)),
+    );
+
     await this.planImageRepository.delete({ plan: { id } });
-    await this.planProductService.remove(id);
     return await this.planRepository.delete(id);
   }
 }

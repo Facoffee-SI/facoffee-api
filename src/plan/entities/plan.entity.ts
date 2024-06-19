@@ -37,7 +37,6 @@ export class PlanEntity {
   images: PlanImageEntity[];
 
   @OneToMany(() => PlanProductEntity, (planProduct) => planProduct.plan, {
-    cascade: true,
     eager: true,
   })
   products: PlanProductEntity[];

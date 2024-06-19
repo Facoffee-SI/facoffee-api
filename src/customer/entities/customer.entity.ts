@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user' })
-export class UserEntity {
+@Entity({ name: 'customer' })
+export class CustomerEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -16,16 +16,22 @@ export class UserEntity {
   name: string;
 
   @Column()
+  cpf: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
   email: string;
+
+  @Column()
+  address: string;
 
   @Column()
   password: string;
 
   @Column({ name: 'profile_picture_url', type: 'varchar', nullable: true })
   profilePicture: string;
-
-  @Column({ name: 'is_admin', default: false })
-  isAdmin: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
