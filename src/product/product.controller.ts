@@ -67,8 +67,8 @@ export class ProductController {
     return this.productService.uploadProductImages(images, productId);
   }
 
-  @Delete('images/:productId')
-  removeImages(@Param('productId') productId: string) {
-    return this.productService.removeImages(productId);
+  @Delete('images/:imageId')
+  removeImages(@Param('imageId') imageId: string) {
+    return this.productService.removeImageById(imageId);
   }
 }

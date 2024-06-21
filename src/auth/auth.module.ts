@@ -40,6 +40,8 @@ export class AuthModule {
         '/customer/register',
         '/contact/customer',
         '/about/customer',
+        '/product/customer',
+        '/plan/customer',
       )
       .forRoutes('*');
   }

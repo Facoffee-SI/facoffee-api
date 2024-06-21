@@ -28,9 +28,19 @@ export class PlanController {
     return this.planService.findAll();
   }
 
+  @Get('/customer')
+  findAllForCustomer() {
+    return this.planService.findAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.planService.findOne(id);
+  }
+
+  @Get('/customer/:id')
+  async findOneForCustomer(@Param('id') id: string) {
+    return await this.planService.findOne(id);
   }
 
   @Patch(':id')
@@ -52,8 +62,8 @@ export class PlanController {
     return this.planService.uploadPlanImages(images, planId);
   }
 
-  @Delete('images/:planId')
-  removeImages(@Param('planId') planId: string) {
-    return this.planService.removeImages(planId);
+  @Delete('images/:imageId')
+  removeImages(@Param('imageId') imageId: string) {
+    return this.planService.removeImageById(imageId);
   }
 }
