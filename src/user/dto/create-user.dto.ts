@@ -7,16 +7,20 @@ import {
   Validate,
 } from 'class-validator';
 import { IsMultiWord } from './multi-word-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty()
   @IsNotEmpty({ message: 'Nome completo é obrigatório.' })
   @Validate(IsMultiWord)
   name: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'Email é obrigatório.' })
   @IsEmail({}, { message: 'Email é inválido.' })
   email: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'Senha é obrigatória.' })
   @IsStrongPassword(
     {
@@ -29,6 +33,7 @@ export class CreateUserDto {
   )
   password: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'IDs dos Cargos é obrigatório.' })
   @IsArray({ message: 'IDs dos Cargos deve ser um Array.' })
   @ArrayMinSize(1, { message: 'Deve ser enviado pelo menos um Cargo.' })

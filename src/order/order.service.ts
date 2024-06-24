@@ -29,32 +29,35 @@ export class OrderService {
     await this.orderRepository.save(order);
   }
 
-  async findAll() {
+  async findAll(customerId: string) {
+    const customer = await this.customerService.findOneOrFail(customerId);
     return await this.orderRepository.find({
       relations: ['customer'],
+      where: { customer: customer },
       order: { id: 'ASC' },
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, customerId: string) {
+    const customer = await this.customerService.findOneOrFail(customerId);
     const order = await this.orderRepository.findOne({
-      where: { id },
+      where: { id, customer: customer },
       relations: ['customer'],
     });
     if (!order) {
-      throw new NotFoundException('Produto não encontrado com o ID informado');
+      throw new NotFoundException('Pedido não encontrado com o ID informado');
     }
     return order;
   }
 
   async update(id: number, updateOrderDto: OrderBody) {
-    const order = await this.findOne(id);
+    const order = await this.findOne(id, updateOrderDto.customerId);
     this.orderRepository.merge(order, updateOrderDto);
     return await this.orderRepository.save(order);
   }
 
-  async remove(id: number) {
-    await this.findOne(id);
+  async remove(id: number, customerId: string) {
+    await this.findOne(id, customerId);
     await this.orderRepository.delete(id);
   }
 }

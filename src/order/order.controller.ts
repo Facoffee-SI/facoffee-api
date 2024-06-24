@@ -1,25 +1,18 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('customer/order')
+@ApiTags('/customer/order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @ApiOperation({ summary: 'Cadastra um Pedido' })
+  @ApiBearerAuth('Autenticação JWT')
   @Post()
   create(@Req() req: Request, @Body() createOrderDto: CreateOrderDto) {
     const customerId: string = req['customerId'];
-    console.log(customerId);
     const createOrderBody = {
       customerId: customerId,
       total: createOrderDto.total,
@@ -28,34 +21,19 @@ export class OrderController {
     return this.orderService.create(createOrderBody);
   }
 
+  @ApiOperation({ summary: 'Busca todos os Pedidos do Customer' })
+  @ApiBearerAuth('Autenticação JWT')
   @Get()
-  findAll() {
-    return this.orderService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.orderService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: number,
-    @Body() updateOrderDto: UpdateOrderDto,
-    @Req() req: Request,
-  ) {
+  findAll(@Req() req: Request) {
     const customerId: string = req['customerId'];
-    console.log(customerId);
-    const updateOrderBody = {
-      customerId: customerId,
-      total: updateOrderDto.total,
-      situation: updateOrderDto.situation,
-    };
-    return this.orderService.update(id, updateOrderBody);
+    return this.orderService.findAll(customerId);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-    return await this.orderService.remove(id);
+  @ApiOperation({ summary: 'Busca um Pedido pelo ID' })
+  @ApiBearerAuth('Autenticação JWT')
+  @Get(':id')
+  findOne(@Req() req: Request, @Param('id') id: number) {
+    const customerId: string = req['customerId'];
+    return this.orderService.findOne(id, customerId);
   }
 }

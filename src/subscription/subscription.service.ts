@@ -60,8 +60,35 @@ export class SubscriptionService {
     return await this.subscriptionRepository.save(subscription);
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
-    await this.subscriptionRepository.delete(id);
+  async remove(customerId: string) {
+    await this.findOne(customerId);
+    await this.subscriptionRepository.delete(customerId);
+  }
+
+  async checkSubscriptionExpiration() {
+    try {
+      const subscriptions = await this.findAll();
+
+      for (const subscription of subscriptions) {
+        if (this.hasSubscriptionExpired(subscription)) {
+          await this.remove(subscription.id);
+        }
+      }
+    } catch (error) {
+      console.error(
+        'Erro ao verificar expiração de assinaturas:',
+        error.message,
+      );
+    }
+  }
+
+  hasSubscriptionExpired(subscription: SubscriptionEntity): boolean {
+    const expirationDate = new Date(subscription.expirationDate);
+    const currentDate = new Date();
+
+    expirationDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
+
+    return currentDate > expirationDate;
   }
 }
