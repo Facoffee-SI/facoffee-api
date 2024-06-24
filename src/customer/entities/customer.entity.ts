@@ -1,4 +1,5 @@
 import { OrderEntity } from 'src/order/entities/order.entity';
+import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 import {
   Column,
   CreateDateColumn,
@@ -37,6 +38,9 @@ export class CustomerEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.customer)
   orders: OrderEntity[];
+
+  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.customer)
+  subscriptions: SubscriptionEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

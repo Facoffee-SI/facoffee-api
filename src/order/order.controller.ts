@@ -46,12 +46,12 @@ export class OrderController {
   ) {
     const customerId: string = req['customerId'];
     console.log(customerId);
-    const createOrderBody = {
+    const updateOrderBody = {
       customerId: customerId,
       total: updateOrderDto.total,
       situation: updateOrderDto.situation,
     };
-    return this.orderService.update(id, createOrderBody);
+    return this.orderService.update(id, updateOrderBody);
   }
 
   @Delete(':id')
