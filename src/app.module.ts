@@ -16,6 +16,7 @@ import { PlanProductModule } from './plan-product/plan-product.module';
 import { AboutModule } from './about/about.module';
 import { CustomerModule } from './customer/customer.module';
 import { S3Service } from './s3/s3.service';
+import { OrderModule } from './order/order.module';
 import * as cors from 'cors';
 
 @Module({
@@ -52,6 +53,7 @@ import * as cors from 'cors';
     PlanProductModule,
     AboutModule,
     CustomerModule,
+    OrderModule,
   ],
   providers: [S3Service],
 })

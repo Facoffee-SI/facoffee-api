@@ -1,8 +1,10 @@
+import { OrderEntity } from 'src/order/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +34,9 @@ export class CustomerEntity {
 
   @Column({ name: 'profile_picture_url', type: 'varchar', nullable: true })
   profilePicture: string;
+
+  @OneToMany(() => OrderEntity, (order) => order.customer)
+  orders: OrderEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
