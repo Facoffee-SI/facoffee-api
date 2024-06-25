@@ -41,7 +41,7 @@ export class SubscriptionService {
   async findOne(customerId: string) {
     const customer = await this.customerService.findOneOrFail(customerId);
     const subscription = await this.subscriptionRepository.findOne({
-      where: { customer: customer },
+      where: { customer: { id: customer.id } },
       relations: ['customer', 'plan'],
     });
     if (!subscription) {

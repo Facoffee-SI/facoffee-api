@@ -33,7 +33,7 @@ export class OrderService {
     const customer = await this.customerService.findOneOrFail(customerId);
     return await this.orderRepository.find({
       relations: ['customer'],
-      where: { customer: customer },
+      where: { customer: { id: customer.id } },
       order: { id: 'ASC' },
     });
   }
@@ -41,7 +41,7 @@ export class OrderService {
   async findOne(id: number, customerId: string) {
     const customer = await this.customerService.findOneOrFail(customerId);
     const order = await this.orderRepository.findOne({
-      where: { id, customer: customer },
+      where: { id, customer: { id: customer.id } },
       relations: ['customer'],
     });
     if (!order) {
