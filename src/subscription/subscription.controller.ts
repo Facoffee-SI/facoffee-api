@@ -30,6 +30,7 @@ export class SubscriptionController {
     const createSubscriptionBody = {
       customerId: customerId,
       planId: createSubscriptionDto.planId,
+      yearly: createSubscriptionDto.yearly,
     };
     return this.subscriptionService.create(createSubscriptionBody);
   }
@@ -54,6 +55,7 @@ export class SubscriptionController {
     const updateSubscriptionBody = {
       customerId: customerId,
       planId: updateSubscriptionDto.planId,
+      yearly: updateSubscriptionDto.yearly,
     };
     return this.subscriptionService.update(id, updateSubscriptionBody);
   }

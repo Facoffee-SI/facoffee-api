@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -14,6 +15,9 @@ import { PlanEntity } from 'src/plan/entities/plan.entity';
 export class SubscriptionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ name: 'expiration_date', type: 'timestamp' })
+  expirationDate: Date;
 
   @ManyToOne(() => CustomerEntity, (customer) => customer.subscriptions)
   @JoinColumn({ name: 'customer_id' })
@@ -29,6 +33,6 @@ export class SubscriptionEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: string;
 
-  @Column({ name: 'expiration_date', type: 'timestamp' })
-  expirationDate: Date;
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: string;
 }

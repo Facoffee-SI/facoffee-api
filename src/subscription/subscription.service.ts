@@ -4,10 +4,12 @@ import { SubscriptionEntity } from './entities/subscription.entity';
 import { Repository } from 'typeorm';
 import { CustomerService } from 'src/customer/customer.service';
 import { PlanService } from 'src/plan/plan.service';
+import * as moment from 'moment';
 
 interface SubscriptionBody {
   customerId: string;
   planId: string;
+  yearly: boolean;
 }
 
 @Injectable()
@@ -19,14 +21,31 @@ export class SubscriptionService {
     private readonly planService: PlanService,
   ) {}
 
+  private calculateExpirationDate(yearly: boolean) {
+    let expirationDate: moment.MomentInput;
+    if (yearly) {
+      expirationDate = moment(expirationDate).add(1, 'year').toDate();
+    } else {
+      expirationDate = moment(expirationDate).add(1, 'month').toDate();
+    }
+
+    return expirationDate;
+  }
+
   async create(createSubscriptionDto: SubscriptionBody) {
+    const expirationDate = this.calculateExpirationDate(
+      createSubscriptionDto.yearly,
+    );
+
     const customer = await this.customerService.findOneOrFail(
       createSubscriptionDto.customerId,
     );
     const plan = await this.planService.findOne(createSubscriptionDto.planId);
+
     const subscription = this.subscriptionRepository.create({
       plan: plan,
       customer: customer,
+      expirationDate: expirationDate,
     });
     await this.subscriptionRepository.save(subscription);
   }
@@ -45,24 +64,32 @@ export class SubscriptionService {
       relations: ['customer', 'plan'],
     });
     if (!subscription) {
-      throw new NotFoundException('Produto não encontrado com o ID informado');
+      throw new NotFoundException('Assinatura não encontrada');
     }
     return subscription;
   }
 
   async update(id: string, updateSubscriptionDto: SubscriptionBody) {
+    const expirationDate = this.calculateExpirationDate(
+      updateSubscriptionDto.yearly,
+    );
+
     const subscription = await this.findOne(id);
     const customer = await this.customerService.findOneOrFail(
       updateSubscriptionDto.customerId,
     );
     const plan = await this.planService.findOne(updateSubscriptionDto.planId);
-    this.subscriptionRepository.merge(subscription, { customer, plan });
+    this.subscriptionRepository.merge(subscription, {
+      customer,
+      plan,
+      expirationDate,
+    });
     return await this.subscriptionRepository.save(subscription);
   }
 
   async remove(customerId: string) {
-    await this.findOne(customerId);
-    await this.subscriptionRepository.delete(customerId);
+    const subscription = await this.findOne(customerId);
+    await this.subscriptionRepository.softDelete(subscription.id);
   }
 
   async checkSubscriptionExpiration() {
