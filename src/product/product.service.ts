@@ -104,14 +104,15 @@ export class ProductService {
     await this.handleProductImages(product, images);
   }
 
-  async removeImages(productId: string) {
-    const product = await this.findProductOrFail(productId);
-
-    const imageEntities = await this.productImageRepository.findBy({ product });
-    await Promise.all(
-      imageEntities.map((image) => this.s3Service.deleteImage(image.imageUrl)),
-    );
-    await this.productImageRepository.delete({ product });
+  async removeImageById(imageId: string) {
+    const image = await this.productImageRepository.findOne({
+      where: { id: imageId },
+    });
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+    await this.s3Service.deleteImage(image.imageUrl);
+    await this.productImageRepository.delete({ id: imageId });
   }
 
   async remove(id: string) {

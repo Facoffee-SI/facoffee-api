@@ -25,6 +25,34 @@ export class PlanService {
     private readonly s3Service: S3Service,
   ) {}
 
+  private async findPlanOrFail(id: string): Promise<PlanEntity> {
+    const plan = await this.planRepository.findOne({
+      where: { id },
+      relations: ['images', 'products.product'],
+    });
+
+    if (!plan) {
+      throw new NotFoundException(`Plano com ID ${id} não encontrado`);
+    }
+    return plan;
+  }
+
+  private async handlePlanImages(
+    plan: PlanEntity,
+    images: Express.Multer.File[],
+  ) {
+    const imageEntities = await Promise.all(
+      images.map(async (image) => {
+        const imageUrl = await this.s3Service.uploadImage(image);
+        return this.planImageRepository.create({
+          imageUrl: imageUrl,
+          plan: plan,
+        });
+      }),
+    );
+    await this.planImageRepository.save(imageEntities);
+  }
+
   async create(createPlanDto: CreatePlanDto) {
     const plan = this.planRepository.create(createPlanDto);
     const planCreated = await this.planRepository.save(plan);
@@ -38,20 +66,13 @@ export class PlanService {
 
   async findAll() {
     return await this.planRepository.find({
+      relations: ['products', 'images'],
       order: { name: 'ASC', createdAt: 'DESC' },
     });
   }
 
   async findOne(id: string) {
-    const plan = await this.planRepository.findOne({
-      where: { id },
-      relations: ['images', 'products'],
-    });
-
-    if (!plan) {
-      throw new NotFoundException(`Plano com ID ${id} não encontrado`);
-    }
-    return plan;
+    return this.findPlanOrFail(id);
   }
 
   async update(id: string, updatePlanDto: UpdatePlanDto) {
@@ -68,42 +89,23 @@ export class PlanService {
     images: Express.Multer.File[],
     planId: string,
   ): Promise<void> {
-    const plan = await this.planRepository.findOne({
-      where: { id: planId },
-    });
-
-    if (!plan) {
-      throw new NotFoundException('Plano não encontrado com o ID informado');
-    }
-
-    await this.planImageRepository.delete({ plan });
-    const imageEntities = await Promise.all(
-      images.map(async (image) => {
-        const imageUrl = await this.s3Service.uploadImage(image);
-        const imageEntity = this.planImageRepository.create({
-          imageUrl: imageUrl,
-          plan: plan,
-        });
-        return imageEntity;
-      }),
-    );
-
-    await this.planImageRepository.save(imageEntities);
+    const plan = await this.findPlanOrFail(planId);
+    await this.handlePlanImages(plan, images);
   }
 
-  async removeImages(planId: string) {
-    const plan = await this.planRepository.findOne({
-      where: { id: planId },
+  async removeImageById(imageId: string) {
+    const image = await this.planImageRepository.findOne({
+      where: { id: imageId },
     });
-
-    const imageEntities = await this.planImageRepository.findBy({ plan });
-    await Promise.all(
-      imageEntities.map((image) => this.s3Service.deleteImage(image.imageUrl)),
-    );
-    await this.planImageRepository.delete({ plan });
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+    await this.s3Service.deleteImage(image.imageUrl);
+    await this.planImageRepository.delete({ id: imageId });
   }
 
   async remove(id: string) {
+    await this.findPlanOrFail(id);
     const imageEntities = await this.planImageRepository.findBy({
       plan: { id: id },
     });

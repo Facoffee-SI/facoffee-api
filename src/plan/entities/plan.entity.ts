@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { PlanImageEntity } from './plan-image.entity';
 import { PlanProductEntity } from 'src/plan-product/entities/plan-product.entity';
+import { SubscriptionEntity } from 'src/subscription/entities/subscription.entity';
 
 @Entity({ name: 'plan' })
 export class PlanEntity {
@@ -40,6 +41,9 @@ export class PlanEntity {
     eager: true,
   })
   products: PlanProductEntity[];
+
+  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.plan)
+  subscriptions: SubscriptionEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
