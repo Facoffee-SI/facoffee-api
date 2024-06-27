@@ -29,11 +29,18 @@ export class OrderService {
     await this.orderRepository.save(order);
   }
 
-  async findAll(customerId: string) {
+  async findAllByCustomer(customerId: string) {
     const customer = await this.customerService.findOneOrFail(customerId);
     return await this.orderRepository.find({
       relations: ['customer'],
       where: { customer: { id: customer.id } },
+      order: { id: 'ASC' },
+    });
+  }
+
+  async findAll() {
+    return await this.orderRepository.find({
+      relations: ['customer'],
       order: { id: 'ASC' },
     });
   }
