@@ -48,6 +48,9 @@ INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GE
 INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('PATCH', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('DELETE', 'about', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 
+-- reports
+INSERT INTO permission (`action`, table_name, created_at, updated_at) VALUES('GET', 'report', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+
 -- ROLE-ADMIN
 SET @uuid_role = uuid();
 INSERT INTO `role` (id, name, created_at, updated_at) VALUES(@uuid_role,'Administrador', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
@@ -86,6 +89,8 @@ INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at)
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 30, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 31, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 32, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 33, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
+
 
 -- USER
 -- EMAIL: adminuser@mailinator.com

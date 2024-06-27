@@ -26,7 +26,7 @@ export class OrderController {
   @Get()
   findAll(@Req() req: Request) {
     const customerId: string = req['customerId'];
-    return this.orderService.findAll(customerId);
+    return this.orderService.findAllByCustomer(customerId);
   }
 
   @ApiOperation({ summary: 'Busca um Pedido pelo ID' })
