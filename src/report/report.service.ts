@@ -35,6 +35,7 @@ export class ReportService {
 
   private omitFields(entity: any) {
     const {
+      id,
       deletedAt,
       updatedAt,
       createdAt,
