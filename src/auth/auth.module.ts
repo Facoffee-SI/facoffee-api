@@ -35,6 +35,7 @@ export class AuthModule {
     consumer
       .apply(AuthMiddleware)
       .exclude(
+        '/',
         '/auth/user',
         '/auth/customer',
         '/customer/register',

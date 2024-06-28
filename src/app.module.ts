@@ -19,6 +19,7 @@ import { S3Service } from './s3/s3.service';
 import { OrderModule } from './order/order.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { ReportModule } from './report/report.module';
+import { AppController } from './app.controller';
 import * as cors from 'cors';
 
 @Module({
@@ -59,6 +60,7 @@ import * as cors from 'cors';
     SubscriptionModule,
     ReportModule,
   ],
+  controllers: [AppController],
   providers: [S3Service],
 })
 export class AppModule implements NestModule {
