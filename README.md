@@ -32,11 +32,12 @@ $ npm install
 
 ## Rodando a aplicação
 
+Para rodar rode o comando abaixo
 ```bash
 # development
 $ npm run start
 
-# watch mode
+# watch mode (atualiza quando atualizar o código)
 $ npm run start:dev
 
 # production mode
