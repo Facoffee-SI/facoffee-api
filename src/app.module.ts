@@ -19,6 +19,7 @@ import { S3Service } from './s3/s3.service';
 import { OrderModule } from './order/order.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { ReportModule } from './report/report.module';
+import { AppController } from './app.controller';
 import * as cors from 'cors';
 
 @Module({
@@ -33,11 +34,11 @@ import * as cors from 'cors';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST', 'localhost'),
-        port: Number(configService.get('DB_PORT', 3306)),
-        username: configService.get('DB_USERNAME', 'user'),
-        password: configService.get('DB_PASSWORD', 'password'),
-        database: configService.get('DB_DATABASE', 'facoffee'),
+        host: configService.get('DATABASE_HOST', 'localhost'),
+        port: Number(configService.get('DATABASE_PORT', 3306)),
+        username: configService.get('DATABASE_USERNAME'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
@@ -59,6 +60,7 @@ import * as cors from 'cors';
     SubscriptionModule,
     ReportModule,
   ],
+  controllers: [AppController],
   providers: [S3Service],
 })
 export class AppModule implements NestModule {
