@@ -90,18 +90,3 @@ INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at)
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 31, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 32, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
 INSERT INTO role_permission (id, role_id, permission_id, created_at, updated_at) VALUES(uuid(), @uuid_role, 33, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));
-
-
--- USER
--- EMAIL: adminuser@mailinator.com
--- SENHA: 123456789Ab!
-SET @uuid_user = uuid();
-INSERT INTO `user`
-(id, name, email, password, profile_picture, is_admin, created_at, updated_at, deleted_at)
-VALUES
-(@uuid_user, 'Admin User', 'adminuser@mailinator.com', '$2a$10$wk7XG.FYocppdabLWuuIv.zv7fY2PlFlnJev1lgICcJqoOPJbzh4i', '12345.com', 1, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6), NULL);
-
-
--- USER-ROLE
-INSERT INTO user_role (id,user_id,role_id,created_at,updated_at) VALUES
-(uuid(), @uuid_user, @uuid_role, CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6));

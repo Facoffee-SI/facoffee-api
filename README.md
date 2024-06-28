@@ -8,15 +8,13 @@
 
 API para controle do sistema Facoffee.
 
-
 API criada para a matéria de Construção de Software.
 
 ## Configuração do banco de dados
 
-Foi utilizado o banco MySQL, para rodar é necessário ter o Docker instalado na sua máquina.
-```bash
-docker-compose up -d
-```
+Foi utilizado o banco MySQL, que está hospedado em nuvem.
+
+Para ter acesso aos secrets do Banco de dados, peça ao desenvolvedor responsável pelo projeto.
 
 ## Versão do Node
 

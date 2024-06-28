@@ -15,6 +15,5 @@ services:
       - '3306'
     volumes:
       - facoffee-database:/var/lib/mysql
-      - ./db/CreateInitialInformation.sql:/docker-entrypoint-initdb.d/CreateInitialInformation.sql
 volumes:
   facoffee-database:
